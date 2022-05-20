@@ -19,9 +19,13 @@ const Todo = require('./models/Todo');
 const { updateMany } = require('./models/Todo');
 
 app.get('/todos', async(req, res) =>{
-     const todos = await Todo.find();
-    
-    res.json(todos);
+    const page = +req.query.page ||  0;
+    const size = +req.query.size || 10;
+
+     const todos = await Todo.find().sort({_id: -1}).skip(page).limit(size);
+     const totalCount = await Todo.countDocuments();
+
+   res.json({todos, totalCount});
 });
 
 app.post('/todo/new', (req, res) => {
@@ -64,6 +68,7 @@ app.put('/todo/:id', async (req, res) => {
     
         
 })
+
 
 
 
